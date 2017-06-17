@@ -14,7 +14,7 @@ def Send():
 			inp = str(raw_input('Enter Data: '))
 		if inp == '0':
 			sys.exit()
-		m = IP()/TCP()
+		m = IP()/TCP(reserved=7L)
 		pad = Padding()
 		pad.load = inp
 		while len(pad.load) < (60-len(m)):
@@ -22,12 +22,12 @@ def Send():
 		m = m/pad
 			
 		m.dst = args.target
-		sr1(m)
+		send(m)
 		m.show2()
 
 def declutter(p):
-	if (p[IP].src == args.target):
-		return p[IP].src
+	if (p[IP].src == args.target) and (p[TCP].reserved == 7L):
+		return p[Padding]
 
 def Receive():
 	logger.info('Awaiting Packets')
